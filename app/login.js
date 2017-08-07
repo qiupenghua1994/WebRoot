@@ -38,15 +38,15 @@
 
     app.config(function ($stateProvider,$urlRouterProvider) {
 
-        $urlRouterProvider.otherwise('/login');
-        $stateProvider.state('/login',{
+        $urlRouterProvider.otherwise('login');
+        $stateProvider.state('login', {
             url:'/login',
             templateUrl: 'person/login/view/login.html',
             controller: 'LoginController'
-        }).state('/regist',{
+        }).state('regist', {
             url:'/regist',
-            templateUrl: 'new.html',
-            controller: 'LoginController'
+            templateUrl: 'person/login/view/regist.html',
+            controller: 'RegistController'
         })
     })
 
