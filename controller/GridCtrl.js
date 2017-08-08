@@ -22,7 +22,7 @@
          onGridReady: function () {
             $scope.grid.api.reloadData();
          },
-         pageSize:20,
+        // pageSize:20,
          onRowSelected: function (data) {
             debugger
          },

@@ -87,7 +87,7 @@
             element.addClass('gf-grid-container');
         }
 
-        function gridControler($scope,$attrs){
+        function gridControler($scope,$attrs,$conn){
 
             var deferGridReady = $q.defer();
             var promiseLoadProfiles;
@@ -542,7 +542,7 @@
                         };
                         var reqArgs = buildQueryRequestArgs(getQueryArgForDatasource());
                         reqArgs.page = page;
-                        setSortModel(page,params.sortModel);
+                       // setSortModel(page,params.sortModel);
                         var promise = doQueryFromServer(reqArgs,params);
                         promise.success(function (resp) {
                             if(dataSource.deferLoader){
@@ -626,7 +626,7 @@
                         grid.lastError = '';
                         grid.callbacks.onQueryFromServer(reqArg,params);
 
-                        return $eos.biz(grid.queryUrl,reqArg,success,onQueryError);
+                        return $conn.biz(grid.queryUrl,reqArg,success,onQueryError);
 
                         function onQueryError(error,code){
                             if(error && error.message){

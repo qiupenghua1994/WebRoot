@@ -1,6 +1,6 @@
 <!DOCTYPE HTML>
 <html>
-<header>
+<>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
     <!--引用的 -->
     <!--/paper/WebRoot/-->
@@ -9,6 +9,7 @@
     <script type="text/javascript" src="js/angular-cookies-v1.5.8.js"></script>
     <script type="text/javascript" src="js/angular-ui-router.v0.3.1.js"></script>
     <script type="text/javascript" src="js/ui-bootstrap-tpls-v2.0.1.js"></script>
+    <script type="text/javascript" src="js/ocLazyLoad.js"></script>
     <script type="text/javascript" src="js/echarts.min.js"></script>
     <script type="text/javascript" src="js/bootstrap.js"></script>
     <script type="text/javascript" src="js/notify/modernizr.custom.js"></script>
@@ -34,8 +35,9 @@
     <script type="text/javascript" src="app/common.js"></script>
     <script type="text/javascript" src="app/filter.js"></script>
     <script type="text/javascript" src="app/grid.js"></script>
+    <script type="text/javascript" src="app/conn.js"></script>
     <script type="text/javascript" src="controller/Index.js"></script>
-    <script type="text/javascript" src="controller/PerInfoCtrl.js"></script>
+    <!--<script type="text/javascript" src="controller/PerInfoCtrl.js"></script>-->
     <script type="text/javascript" src="controller/DiscussionCtrl.js"></script>
     <script type="text/javascript" src="controller/ExamCtrl.js"></script>
     <script type="text/javascript" src="controller/HomeCtrl.js"></script>
@@ -43,6 +45,9 @@
     <script type="text/javascript" src="controller/CommonCtrl.js"></script>
     <script type="text/javascript" src="controller/ManageCtrl.js"></script>
     <script type="text/javascript" src="service/AllService.js"></script>
+
+    <!--所有的插件和页面样式必须加载在 golbal 和 css样式之间 用于懒加载-->
+    <link id="ng_load_plugins_before">
 
 </header>
 <body ng-app="app" ng-controller="IndexController" style="background-color:#eee">

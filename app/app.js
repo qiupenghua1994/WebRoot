@@ -12,16 +12,23 @@
             'ngCookies'
             ,'ui.router'
             ,'ui.bootstrap'
+            ,'oc.lazyLoad'
             ,'agGrid'
             ,'service'
             ,'paper'
             ,'myDirective'
+            ,'myFactory'
             ,'filter'
             ,'ngFileUpload'
+
         ]);
 
-    angular.module('myManage',[]);
+    angular.module('myFactory',[]);
 
+    var loadPromise;
+    var lazyLoadFiles=[
+        'controller/PerInfoCtrl.js',
+    ]
 
 
     //扩展api,
@@ -84,7 +91,7 @@
             };
 
             ElementCache.prototype.addElem= function (key,elem) {
-               var existsElem = this.elements[key];
+                var existsElem = this.elements[key];
                 if(existsElem){
                     unbindElemEvents(existsElem);
                     delete this.elements[key];
@@ -133,8 +140,8 @@
      * @return {[type]}
      */
     app.run(runInit);
-    runInit.$inject= ['$rootScope','$state','$stateParams','$uibModal','$uibModalStack'];
-    function runInit($rootScope,$state,$stateParams,$uibModal,$uibModalStack) {
+    runInit.$inject= ['$rootScope','$state','$stateParams','$uibModal','$uibModalStack','$ocLazyLoad','$conn','$q'];
+    function runInit($rootScope,$state,$stateParams,$uibModal,$uibModalStack,$ocLazyLoad,$conn,$q) {
         $rootScope.$state = $state;
         $rootScope.$stateParams = $stateParams;
 
@@ -143,13 +150,15 @@
             globals.$uibModal = $uibModal;
             globals.$uibModalStack = $uibModalStack;
             globals.$start = $state;
+            globals.$ocLazyLoad = $ocLazyLoad;
+            globals.$q = $q;
         }
         initGlobals();
         extendAngularApi();
 
         App.login = function () {
             $rootScope.$emit('login');
-        }
+        };
         App.isLogin = function () {
             if($rootScope.user) {
                 if(!$rootScope.user.account){
@@ -163,9 +172,46 @@
             return true;
         }
 
+        loadPromise = App.utils.lazyLoad({
+            isLoaded:App.utils.isControllerLoaded('PerInfoActivityCtrl'),
+            files:lazyLoadFiles
+        });
+
+
+        //用于验证刷新回话是否过期
+        if(top.location.hash != '#/login'){
+            loadPromise.then(loadSession);
+        }
+
+        function loadSession(){
+            console.info("loadSession");
+            var p = $conn.biz("getSession");//获取session
+            p.then(function(resp){
+                try{
+                    if(resp && resp.user){
+                        $rootScope.user = resp.user;
+                        $rootScope.$emit('login',resp.user);
+                    }else{
+                       //App.goLogin();//登录跳转
+                    }
+                }catch(e){
+                    console.error("load seeesion error"+e);
+                    onLoadError();
+                }
+            },onLoadError);
+            return p;
+        }
+
+        function onLoadError(){
+            //错误处理
+        }
+
+
     }
 
-    app.config(function ($stateProvider,$urlRouterProvider) {
+    app.config(function ($stateProvider,$urlRouterProvider,$controllerProvider) {
+
+        App.globals.controllerProvider = $controllerProvider;
 
         $.get("test.cgi", { name: "John", time: "2pm" },
             function(data){
@@ -174,18 +220,24 @@
 
         $urlRouterProvider.otherwise('/');
         $stateProvider.state('/',{
-                url:'/',
-                templateUrl: 'view/grid.html',
-                controller: 'GridController',
-            }).state('exam',{
-                url:'/exam',
-                templateUrl: 'view/exam/exam.html',
-                controller: 'ExamCtrl'
-            }).state('examRoom',{
-                url:'/examRoom',
-                templateUrl: 'view/exam/examRoom.html',
-                controller: 'ExamRoomCtrl'
-            })
+            url:'/',
+            templateUrl: 'view/grid.html',
+            controller: 'GridController',
+            resolve:{
+                deps: function ($q) {
+                    return loadPromise?loadPromise:$q.reject();
+                }
+            }
+        }).state('exam',{
+            url:'/exam',
+            templateUrl: 'view/exam/exam.html',
+            controller: 'ExamCtrl',
+
+        }).state('examRoom',{
+            url:'/examRoom',
+            templateUrl: 'view/exam/examRoom.html',
+            controller: 'ExamRoomCtrl'
+        })
             .state('perInfo',{
                 url:'/perInfo',
                 params:{args:null},
@@ -193,10 +245,10 @@
                 controller:'PerInfoCtrl',
                 resolve:{
                     args: ['$stateParams', function($stateParams){
-                    //var data = JSON.parse($stateParams.args); //字符转对象
+                        //var data = JSON.parse($stateParams.args); //字符转对象
                         var data = $stateParams.args;
-                    return data;
-                   }]
+                        return data;
+                    }]
                 }
             })
             .state('perInfo.activity',{

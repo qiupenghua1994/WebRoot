@@ -57,14 +57,14 @@
                     });
                     return;
                 }
-                console.error("$conn failed to request"+url+"! status:"+statusCode+" data:"+angular.toJson(data));
+               // console.error("$conn failed to request"+url+"! status:"+statusCode+" data:"+angular.toJson(data));
                 if(null === error){
                     return;
                 }
                 if(data && data.message){
                     alert(data.message);
                 }else{
-                    alert("系统错误:"+statusCode);
+                  //  alert("系统错误:"+statusCode);
                 }
             }
             return p;
@@ -78,7 +78,7 @@
                 var p = $http.get(actionUrl);
                 return warpAjaxPromise(p,url,success,error);
             }
-            function ajaxPost(url,data,succss,error){
+            function ajaxPost(url,data,success,error){
                 var bParams =url.indexOf('?')>0;
                 var actionUrl = _basePath+url+(bParams?'':_suffix);
                 var user = $rootScope.user;

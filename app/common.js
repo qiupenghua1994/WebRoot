@@ -7,14 +7,18 @@ var App = function ($,angular,window) {
 
     var user = 111;
     var isLogin = null;
+    var debug = false;
     var notification = null;//提示框
 
     var globals = {
+        controllerProvider:null,
         $q:null,
         $uibModal:null,
         $modalStack:null,
         $start:null,
-        $rootScope:null
+        $rootScope:null,
+        $ocLazyLoad:null,
+        $q:null,
     };
 
 
@@ -102,6 +106,61 @@ var App = function ($,angular,window) {
     var utils= function () {
 
 
+        var defaultLoadOption = {
+            isLoaded:false,
+            cache:!debug,
+            insertBefore:'#ng_load_plugins_before',
+            files:[]
+        };
+
+        /**
+         * 动态加载js或css文件
+         * @param opts
+         * @returns {d.promise|Function|*|promise}
+         */
+        function lazyLoad(opts){
+            var deferred = globals.$q.defer();
+
+            if(!globals.$ocLazyLoad){
+                deferred.reject();
+                return deferred.promise;
+            }
+            opts = angular.extend({},defaultLoadOption,opts);
+
+            var loaded = opts.isLoaded;
+            if(typeof loaded === 'function'){
+                loaded = loaded(opts);
+            }
+            if(loaded){
+                deferred.resolve();
+                return deferred.promise;
+            }
+            return globals.$ocLazyLoad.load(opts);
+        }
+
+        /**
+         * 判断是否已加载了指定的Controller
+         * @param controllerName
+         * @returns {*}
+         */
+        function isControllerLoaded(controllerName){
+            return globals.controllerProvider.has(controllerName);
+        }
+
+        /**
+         * 动态加载Controller
+         * @param controllerName
+         * @param files
+         * @returns {d.promise|Function|*|promise}
+         */
+        function loadController(controllerName,files){
+            return lazyLoad({
+                isLoaded:isControllerLoaded(controllerName),
+                files:files
+            })
+        }
+
+
         function clearFormDate($form){
             for(var name in $form){
                 var m = $form[name];
@@ -154,10 +213,13 @@ var App = function ($,angular,window) {
 
         return {
             clearFormDate:clearFormDate,
-            get100:get100
+            get100:get100,
+            lazyLoad:lazyLoad,
+            loadController:loadController,
+            isControllerLoaded:isControllerLoaded
+
         }
     }();
-
 
 
 
@@ -175,6 +237,7 @@ var App = function ($,angular,window) {
         router:router,
         notify:notify,
         utils:utils,
+
     }
 
 }(window.jQuery,window.angular,window);
