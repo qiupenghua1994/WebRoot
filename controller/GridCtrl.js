@@ -18,14 +18,12 @@
       ];
       $scope.data1=1;
       $scope.grid = {
-         queryUrl:'test',
+         //queryUrl:'test',
          onGridReady: function () {
-            $scope.grid.api.reloadData();
+            $scope.grid.api.setRowData(data);
          },
         // pageSize:20,
-         onRowSelected: function (data) {
-            debugger
-         },
+
          columnDefs:[
             {
                headerName:'客户号',

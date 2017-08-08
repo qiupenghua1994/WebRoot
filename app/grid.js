@@ -39,22 +39,22 @@
          * @type {{localeText: {autosizeThiscolumn: string, autosizeAllColumns: string, loadingOoo: string}, rowHeight: number, colWidth: number, maxColWidth: number, enableStatusBar: boolean, groupHeaders: boolean, enableColResize: boolean, suppressContextMenu: boolean, enableFilter: boolean, suppressMenuMainPanel: boolean}}
          */
         var defaultAgGrid = {
-            //localeText:localeTextObj,
+            localeText:localeTextObj,
             rowHeight:28,
             colWidth:100,
-            //rowSelection:'multiple',
-            //maxColWidth:500,
-            //enableStatusBar:false,
-            //groupHeaders:false,
-            //enableColResize:false,
-            //suppressContextMenu:false,
-            //enableFilter:false,
-            ////suppressRowClickSelection:true,
-            //suppressMenuMainPanel:false,
-            //suppressMenuColumnPanel:true,
-            //suppressMenuFilterPanel:false,
-            //suppressLoadingOverlay:true,//禁止显示 正在加载
-            //suppressNoRowsOverlay:true,//禁止显示 没有记录
+            rowSelection:'multiple',
+            maxColWidth:500,
+            enableStatusBar:false,
+            groupHeaders:false,
+            enableColResize:false,
+            suppressContextMenu:false,
+            enableFilter:false,
+            //suppressRowClickSelection:true,
+            suppressMenuMainPanel:false,
+            suppressMenuColumnPanel:true,
+            suppressMenuFilterPanel:false,
+            suppressLoadingOverlay:true,//禁止显示 正在加载
+            suppressNoRowsOverlay:true,//禁止显示 没有记录
 
         };
 
@@ -487,7 +487,7 @@
                     }
                     function setRowData(rows,rowList){
                         agGrid.api.setRowData(rows);
-                        grid.totalRowCount =rowList?rowList.length:row.length;
+                        grid.totalRowCount =rowList?rowList.length:rows.length;
                         grid.treeTotalRowCount = rowList?rowList.length:undefined;
                         grid.callbacks.onDataLoaded({data:rows});
 
@@ -659,17 +659,17 @@
             }
 
             grid.queryArgName = angular.getAttrVal($attrs,'queryArgName',grid.queryArgName,'q');
-            grid.autoLoad = angular.getBoolAttr($attrs,'autoLoad',grid.autoLoad,true);
+            grid.autoLoad = angular.getBoolAttr($attrs,'autoLoad',grid.autoLoad,false);
             grid.autoFit = angular.getBoolAttr($attrs,'autoFit',grid.autoFit,false);
             grid.autoColumnSize = angular.getBoolAttr($attrs,'autoColumnSize',grid.autoColumnSize,false);
 
             if(!grid.filter){
                 grid.filter = {};
             }
-            grid.statusBar = angular.getBoolAttr($attrs,'statusBar',grid.statusBar,true);
-            grid.statusCountBar = angular.getBoolAttr($attrs,'statusCountBar',grid.statusCountBar,true);
-            grid.disableColumnMenu = angular.getBoolAttr($attrs,'disableColumnMenu',grid.disableColumnMenu,true);
-            grid.showQueryBloking = angular.getBoolAttr($attrs,'showQueryBloking',grid.showQueryBloking,true);
+            grid.statusBar = angular.getBoolAttr($attrs,'statusBar',grid.statusBar,false);
+            grid.statusCountBar = angular.getBoolAttr($attrs,'statusCountBar',grid.statusCountBar,false);
+            grid.disableColumnMenu = angular.getBoolAttr($attrs,'disableColumnMenu',grid.disableColumnMenu,false);
+            grid.showQueryBloking = angular.getBoolAttr($attrs,'showQueryBloking',grid.showQueryBloking,false);
 
             return grid;
         }
