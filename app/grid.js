@@ -42,13 +42,13 @@
             localeText:localeTextObj,
             rowHeight:28,
             colWidth:100,
-            rowSelection:'multiple',
             maxColWidth:500,
             enableStatusBar:false,
             groupHeaders:false,
             enableColResize:false,
             suppressContextMenu:false,
             enableFilter:false,
+            rowSelection: 'single',  //行选择模式‘single’ ‘multiple’
             //suppressRowClickSelection:true,
             suppressMenuMainPanel:false,
             suppressMenuColumnPanel:true,
@@ -95,7 +95,9 @@
             var grid = initGrid(ctrl,$attrs);
             var needAutoFit = true;
 
-            var agGrid = {};
+            var agGrid = {
+                columnDefs: grid.columnDefs
+            };
 
             var scopeForLink = $scope.$parent.$new();
             scopeForLink.handlerMap = {};
@@ -134,8 +136,7 @@
                 setupAgGridEvents(grid,agGrid);
 
                 //回传agGrid对象
-                grid.agGrid = grid;
-
+                grid.agGrid = agGrid;
 
                 /**
                  * 自定义选择列面板

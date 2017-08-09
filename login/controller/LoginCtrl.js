@@ -3,20 +3,48 @@
  */
 (function (angular) {
 
+    var app = angular.module('login',
+        [
+            'ngCookies'
+            , 'ui.router'
+            , 'ui.bootstrap'
+            , 'myFactory'
+        ]);
+    app.config(function ($stateProvider, $urlRouterProvider) {
+        $urlRouterProvider.otherwise('login');
+        $stateProvider.state('login', {
+            url: '/login',
+            templateUrl: 'login/view/login.html',
+            controller: 'LoginController'
+        }).state('regist', {
+            url: '/regist',
+            templateUrl: 'login/view/regist.html',
+            controller: 'LoginController'
+        })
+    });
 
-    function LoginController($scope, $cookies) {
+    function LoginController($scope, $cookies, $conn) {
 
         $scope.user = {
             account:'',
             pwd:''
         };
         $scope.loginBtn = function () {
-            setCookie('user', {name: 'qph', age: 13});
+            setCookie('user', {name: '管理', age: 13});
+            //login($scope.user);
             toIndex()
         };
         $scope.registBtn = function () {
+            setCookie('user', {name: '管理', age: 13});
+            //login($scope.user);
             toIndex()
         };
+        function login(user) {
+            var q = $conn.biz('login', user);
+            q.then(function (resp) {
+                setCookie('user', resp);
+            });
+        }
         //设置cookie
         function setCookie(name, value) {
             if (value) {
@@ -47,4 +75,4 @@
 
     angular.module('login')
         .controller('LoginController', LoginController)
-}(window.angular))
+}(window.angular));

@@ -13,6 +13,9 @@
             ,'ui.router'
             ,'ui.bootstrap'
             ,'oc.lazyLoad'
+            , 'manage'
+            , 'person'
+
             ,'agGrid'
             ,'service'
             ,'paper'
@@ -23,12 +26,15 @@
 
         ]);
 
-    angular.module('myFactory',[]);
+    angular.module('manage', []);
+    angular.module('person', []);
+
 
     var loadPromise;
     var lazyLoadFiles=[
         'controller/PerInfoCtrl.js',
-    ]
+        'manage/User/Controller/UserCtrl.js',
+    ];
 
 
     //扩展api,
@@ -186,7 +192,7 @@
 
         //用于验证刷新回话是否过期
         if(top.location.hash != '#/login'){
-            loadPromise.then(loadSession);
+            //  loadPromise.then(loadSession);
         }
 
         function loadSession(){
@@ -225,11 +231,6 @@
     app.config(function ($stateProvider,$urlRouterProvider,$controllerProvider) {
 
         App.globals.controllerProvider = $controllerProvider;
-
-        $.get("test.cgi", { name: "John", time: "2pm" },
-            function(data){
-                alert("Data Loaded: " + data);
-            });
 
         $urlRouterProvider.otherwise('/');
         $stateProvider.state('/',{
@@ -362,11 +363,10 @@
                     }]
                 }
             })
-        //新系统
             .state('sys_user',{
-                url:'sys_user',
-                templateUrl:'',
-                controller:''
+                url: '/sys_user',
+                templateUrl: 'manage/User/View/User.html',
+                controller: 'UserController'
             })
     })
 

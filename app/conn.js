@@ -126,7 +126,7 @@
         };
     }
 
-    angular.module('myFactory')
+    angular.module('myFactory', [])
         .factory('gfAjaxInterceptor',ajaxInterceptor)
         .provider('$conn',connProvider);
 })(window.angular)

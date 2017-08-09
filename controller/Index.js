@@ -19,6 +19,7 @@
         }).mouseout(function () {
             $(this).removeClass('open');
         });
+
         //设置cookie
         var setCookie = function (name,value) {
             if(value){
@@ -30,7 +31,7 @@
         };
         //获取cookie
         var getCookie = function () {
-            var user = $cookies.getObject("user")  ;
+            var user = $cookies.getObject("user");
             if(!user){return;}
             if(user.account){
                 $scope.user = user;
@@ -43,6 +44,12 @@
         $scope.reset = function () {
             $scope.user = {};
         };
+
+        $scope.hideMenu = function () {
+            $('li.dropdown').removeClass('open');
+        }
+
+
         //登录
         $scope.loginClick = function () {
             var q = AllService.login($scope.user);
