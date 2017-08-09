@@ -140,8 +140,8 @@
      * @return {[type]}
      */
     app.run(runInit);
-    runInit.$inject= ['$rootScope','$state','$stateParams','$uibModal','$uibModalStack','$ocLazyLoad','$conn','$q'];
-    function runInit($rootScope,$state,$stateParams,$uibModal,$uibModalStack,$ocLazyLoad,$conn,$q) {
+    runInit.$inject= ['$cookies','$rootScope','$state','$stateParams','$uibModal','$uibModalStack','$ocLazyLoad','$conn','$q'];
+    function runInit($cookies,$rootScope,$state,$stateParams,$uibModal,$uibModalStack,$ocLazyLoad,$conn,$q) {
         $rootScope.$state = $state;
         $rootScope.$stateParams = $stateParams;
 
@@ -170,12 +170,18 @@
                 return false
             }
             return true;
-        }
+        };
 
         loadPromise = App.utils.lazyLoad({
             isLoaded:App.utils.isControllerLoaded('PerInfoActivityCtrl'),
             files:lazyLoadFiles
         });
+
+        if(getCookie('user')){
+            $rootScope.user = getCookie('user')
+        }else{
+            window.location.href = "/login.html";
+        }
 
 
         //用于验证刷新回话是否过期
@@ -205,7 +211,14 @@
         function onLoadError(){
             //错误处理
         }
-
+        //获取cookie
+        function getCookie(name) {
+            var user = $cookies.getObject(name);
+            if (!user) {
+                return;
+            }
+            return user;
+        };
 
     }
 
@@ -228,12 +241,14 @@
                     return loadPromise?loadPromise:$q.reject();
                 }
             }
-        }).state('exam',{
+        })
+            .state('exam',{
             url:'/exam',
             templateUrl: 'view/exam/exam.html',
             controller: 'ExamCtrl',
 
-        }).state('examRoom',{
+        })
+            .state('examRoom',{
             url:'/examRoom',
             templateUrl: 'view/exam/examRoom.html',
             controller: 'ExamRoomCtrl'
@@ -346,6 +361,12 @@
                         return data;
                     }]
                 }
+            })
+        //新系统
+            .state('sys_user',{
+                url:'sys_user',
+                templateUrl:'',
+                controller:''
             })
     })
 
