@@ -95,9 +95,7 @@
             var grid = initGrid(ctrl,$attrs);
             var needAutoFit = true;
 
-            var agGrid = {
-             //   rowSelection:grid.multiSelect?'multiple':'single'
-            };
+            var agGrid = {};
 
             var scopeForLink = $scope.$parent.$new();
             scopeForLink.handlerMap = {};
@@ -136,7 +134,7 @@
                 setupAgGridEvents(grid,agGrid);
 
                 //回传agGrid对象
-                grid.agGrid = agGrid;
+                grid.agGrid = grid;
 
 
                 /**
@@ -248,7 +246,7 @@
 
                         if(params.data && params.data.length>0){
                             needAutoFit = false;
-                            grid.api.tryAutoFitColumn();
+                            grid.api.tryAutoFitColumns();
                         }
                     }
 
@@ -403,7 +401,7 @@
                         if(grid.autoColumnSize){
                             agGrid.columnApi.autosizeAllColumns();
                         }else if(grid.autoFit){
-                            agGrid.api.sizeColumnToFit();
+                            agGrid.api.sizeColumnsToFit();
                         }
                     }
 
