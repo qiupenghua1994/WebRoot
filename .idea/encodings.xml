@@ -4,8 +4,8 @@
     <file url="file://$PROJECT_DIR$/app/grid.js" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/css/grid/grid.css" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/css/index.css" charset="UTF-8" />
-    <file url="file://$PROJECT_DIR$/js/file/ng-file-upload-all.js" charset="GBK" />
-    <file url="file://$PROJECT_DIR$/js/file/ng-file-upload.js" charset="GBK" />
+    <file url="file://$PROJECT_DIR$/lib/file/ng-file-upload-all.js" charset="GBK" />
+    <file url="file://$PROJECT_DIR$/lib/file/ng-file-upload.js" charset="GBK" />
     <file url="PROJECT" charset="UTF-8" />
   </component>
 </project>

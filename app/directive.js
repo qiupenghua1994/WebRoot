@@ -150,12 +150,108 @@
         };
     }
 
+    /**
+     *加载页签页面
+     * @param $controller
+     * @param $compile
+     * @param $templateRequest
+     * @param $q
+     * @returns {{restrict: string, scope: {gfIncludeView: string, pageArgs: string, lazyLoad: string}, compile: Function}}
+     */
+    function gfIncludeViewDirective($controller,$compile,$templateRequest,$q){
+        function loadController(page,scope,$element,$attr){
+            var pageArgs = scope.pageArgs;
+            var deferred = $q.defer();
+            scope.$page = page;
+
+            var q = App.utils.loadController(page.controller,page.depd);
+            q.then(function () {
+                var locals = {
+                    $scope:scope,
+                    $element:$element,
+                    $attrs:$attrs,
+                    args:pageArgs
+                };
+
+                var controller = $controller(page.controller,locals,false);
+                if(angular.isFunction(controller.onLoadPage)){
+                    controller.onLoadPage(page);
+                }
+                deferred.resolve(controller);
+            });
+            return deferred.promise;
+        }
+
+        function loadTemplate(templateUrl,scope,$element){
+            var deferred = $q.defer();
+            $templateRequest(templateUrl,true).then(function (html) {
+                if(scope.$$destroyed) return;
+                $element.html(html);
+                $compile($element.contents())(scope);
+                deferred.resolve();
+            });
+            return deferred.promise;
+        }
+
+        function compileIncludeView(scope,$element,$attr){
+            var page = scope.gfIncludeView;
+            if(!page.templateUrl){
+                return;
+            }
+            $element.addClass('gf-include-view');
+            var loaded = false;
+            function doLoad(){
+                if(page.controller){
+                    loadController(page,scope,$element,$attr).then(function (controller){
+                        loadTemplate(page.templateUrl,scope,$element).then(function () {
+                            $element.data('$ngControllerController',controller);
+                            $element.children().data('$ngControllerController',controller);
+                        });
+                    });
+                }else{
+                    loadTemplate(page.templateUrl,scope,$element);
+                }
+                loaded = true;
+            }
+
+            if(angular.isDefined(scope.lazyLoad)){
+                var loadWatch = scope.$watch('lazyLoad', function (newView) {
+                    if(scope.lazyLoad && !loaded){
+                        doLoad();
+                        //取消watch
+                        loadWatch();
+                    }
+                });
+            }else{
+                doLoad();
+            }
+
+            scope.$on('$destroy', function () {
+                $element.remove();
+                $element = null;
+            });
+        }
+
+        return {
+            restrict:'A',
+            scope:{
+                'gfIncludeView':'<',
+                'pageArgs':'<',
+                'lazyLoad':'<'
+            },
+            compile: function (element,attr) {
+                return compileIncludeView;
+            }
+        }
+    }
+
 
     angular.module('myDirective',[])
         .directive('gfFormDialog',gfFormDialogDirective)
         .directive('gfButtonSave',gfIconButtonDirectiveFactory('gfButtonSave','save','fa fa-check'))
         .directive('gfButtonClose',gfIconButtonDirectiveFactory('gfButtonClose','$dismiss','fa fa-close'))
         .directive('eCharts',eChartsDirective)
+        .directive('gfInciudeView',gfIncludeViewDirective)
 
 
 })(window.angular,window.JQuery)

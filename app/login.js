@@ -3,7 +3,7 @@
  */
 (function (angular,$) {
 
-    window.agGrid.initialiseAgGridWithAngular1(angular);
+
 
     var app = angular.module('login',
         [
@@ -11,13 +11,6 @@
             ,'ui.router'
             ,'ui.bootstrap'
         ]);
-
-    app.controller('LoginController',LoginController);
-
-    function LoginController($scope){
-        $scope.aa = 'niahao';
-    };
-
 
 
     /**
